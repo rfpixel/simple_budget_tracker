@@ -1,85 +1,68 @@
 from datetime import datetime
+from income import Income
+from expense import Expense
 from csvtracker import CsvTracker
 
 class BudgetTracker:
-    def __init__(self, initial_balance):
-        self.balance = initial_balance
-        self.income = 0
+    def __init__(self, name):
         self.expenses = []
+        self.incomes = []
+        self.name = name
     
-    def add_income(self, amount):
-        self.income += amount
-        self.balance += amount
-
-    def add_expense(self, desc, amount, date):
-        self.balance -= amount
-        self.expenses.append((desc, amount, date))
+    def get_budget_name(self):
+        return self.name
     
-    def get_balance(self):
-        return self.balance
+    def add_income(self, income):
+        if not isinstance(income, Income):
+            print("Invalid income object")
+            return
+        self.incomes.append(income)
     
-    def get_income(self):
-        return self.income
+    def get_incomes(self):
+        return self.incomes
     
-    def get_expenses(self):
-        return self.expenses
-    
-    def get_total_expenses(self):
-        return sum([expense[1] for expense in self.expenses])
-    
-    def get_account_info(self):
-        print(f"Balance: {self.balance}")
-        print(f"Total Income: {self.income}")
-        print(f"Total Expenses: {self.get_total_expenses()}")
-        print("Expenses of the month")
-        for expense in self.get_expenses():
-            print(f"{expense[0]} --- $ {expense[1]} --- {expense[2]}")
-
-    def get_expenses_month(self, month, year):
+    def calculate_income_by_month(self, month, year):
         total_by_month = 0
-        print(f"Expenses of {self._get_month(month)} {year}\n")
-        for expense in self.expenses:
-            date_string = expense[2]
+        for income in self.incomes:
+            date_string = income.get_date()
             date_object = datetime.strptime(date_string, "%d/%m/%Y")
             if date_object.month == month and date_object.year == year:
-                print(f"{expense[0]} --- $ {expense[1]} --- {expense[2]}")
-                total_by_month += expense[1]
-            
-        print(f"\nTotal by {self._get_month(month)} {year} --- ${total_by_month}\n")
+                total_by_month += income.get_amount()
+        return total_by_month
 
+    def add_expense(self, expense):
+        if not isinstance(expense, Expense):
+            print("Invalid expense object")
+            return
+
+        self.expenses.append(expense)
+
+    def get_expenses(self):
+        return self.expenses
+       
+    def calculate_expenses_by_month(self, month, year):
+        total_by_month = 0
+        for expense in self.expenses:
+            date_string = expense.get_date()
+            date_object = datetime.strptime(date_string, "%d/%m/%Y")
+            if date_object.month == month and date_object.year == year:
+                total_by_month += expense.get_amount()
+        return total_by_month
+    
     def _get_month(self, month):
         if month < 1 and month > 12:
             return None
         months = ['january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december']
         return  months[month-1].capitalize()
-    
-    def load_csv(self, file_path):
+
+    def load_csv_expenses(self, file_path):
         #csvtracking = CsvTracker('./expenses_december.csv')
         csvtracking = CsvTracker(file_path)
-        expenses = csvtracking.read_csv()
-        for expense in expenses:
-            self.add_expense(expense[0],expense[1],expense[2])
+        expenses = csvtracking.read_csv_expenses()
+        for e in expenses:
+            self.add_expense(e)
 
-rafa_tracking  = BudgetTracker(1000)
-rafa_tracking.add_income(100)
-rafa_tracking.add_income(100)
-rafa_tracking.add_expense("Game",150,  "15/02/2024")
-rafa_tracking.add_expense("Supermarket",150, "15/02/2024")
-rafa_tracking.add_expense("Microsoft",150, "16/03/2024")
-rafa_tracking.add_expense("Microsoft",250, "16/03/2024")
-rafa_tracking.add_expense("Microsoft",350, "17/03/2024")
-rafa_tracking.add_expense("Microsoft",150.05, "18/03/2024")
-rafa_tracking.add_expense("Microsoft",10.01, "19/03/2024")
-rafa_tracking.add_expense("Microsoft",10.99, "19/03/2024")
-
-#rafa_tracking.get_account_info()
-#rafa_tracking.get_expenses_month(3,2024)
-#rafa_tracking.read_csv('./expenses_december.csv')
-#rafa_tracking.get_account_info()
-#rafa_tracking.get_expenses_month(12,2024)
-rafa_tracking.load_csv('./expenses_december.csv')
-
-for month in range(1,13):
-    rafa_tracking.get_expenses_month(month,2024)
-#rafa_tracking.get_expenses_month(12,2024)
-
+    def calculate_balance_month(self, month, year):
+        total_expense = self.calculate_expenses_by_month(month, year)
+        total_income = self.calculate_income_by_month(month,year)
+        return total_income - total_expense

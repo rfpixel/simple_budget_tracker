@@ -1,12 +1,13 @@
 from datetime import datetime
 import csv
+from expense import Expense
 
 class CsvTracker:
     def __init__(self, csv_file_path):
         self.file_path = csv_file_path
         
-    def read_csv(self):
-        expense_list = []
+    def read_csv_expenses(self):
+        expenses = []
         with open(self.file_path, "r") as csv_file:
             csv_reader = csv.reader(csv_file)
             for row in csv_reader:
@@ -19,16 +20,22 @@ class CsvTracker:
                     #check if the row is valid format
                     if self._is_valid(cleaned_row):
                         #print(cleaned_row)
-                        expense_list.append(cleaned_row)
+                        #expenses.append(cleaned_row)
+                        e = self._create_expense(cleaned_row)
+                        expenses.append(e)
                     else:
                         print("invalid csv data. Check format: shop name,price,date")
                         print(f"Please check the following line: {cleaned_row}\n")
                     #self.add_expense(cleaned_row[0], float(cleaned_row[1]), cleaned_row[2])
-        #print(expense_list)
-        return expense_list
+        #print(expenses)
+        return expenses
 
+    def _create_expense(self, row):
+        expense = Expense(row[0],row[1],row[2],row[3])
+        return expense
+    
     def _is_valid(self, row):
-        return self._is_string(row[0]) and self._is_number(row[1]) and self._is_date(row[2])
+        return self._is_string(row[0]) and self._is_number(row[1]) and self._is_date(row[2]) and self._is_string(row[3]) 
     
     def _is_string(self, testdata):
         if isinstance(testdata, str):
@@ -51,4 +58,4 @@ class CsvTracker:
             return False
 
 #test_csv = CsvTracker('./expenses_december.csv')
-#test_csv.read_csv()
+#test_csv.read_csv_expenses()
