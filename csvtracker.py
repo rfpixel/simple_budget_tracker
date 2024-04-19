@@ -6,6 +6,7 @@ class CsvTracker:
         self.file_path = csv_file_path
         
     def read_csv(self):
+        expense_list = []
         with open(self.file_path, "r") as csv_file:
             csv_reader = csv.reader(csv_file)
             for row in csv_reader:
@@ -16,22 +17,26 @@ class CsvTracker:
                     cleaned_row[1] = float(cleaned_row[1])
 
                     #check if the row is valid format
-                    if self.is_valid(cleaned_row):
-                        print(cleaned_row)
+                    if self._is_valid(cleaned_row):
+                        #print(cleaned_row)
+                        expense_list.append(cleaned_row)
                     else:
                         print("invalid csv data. Check format: shop name,price,date")
+                        print(f"Please check the following line: {cleaned_row}\n")
                     #self.add_expense(cleaned_row[0], float(cleaned_row[1]), cleaned_row[2])
+        #print(expense_list)
+        return expense_list
 
-    def is_valid(self, row):
-        return self.is_string(row[0]) and self.is_number(row[1]) and self.is_date(row[2])
+    def _is_valid(self, row):
+        return self._is_string(row[0]) and self._is_number(row[1]) and self._is_date(row[2])
     
-    def is_string(self, testdata):
+    def _is_string(self, testdata):
         if isinstance(testdata, str):
             return True
         else:
             return False
         
-    def is_date(self, testdata):
+    def _is_date(self, testdata):
         date_format = "%d/%m/%Y"
         try:
             bool(datetime.strptime(testdata, date_format))
@@ -39,17 +44,11 @@ class CsvTracker:
         except ValueError:
             return False
 
-    def is_number(self, testdata):
+    def _is_number(self, testdata):
         if isinstance(testdata, (int,float)):
             return True
         else:
             return False
 
-test_csv = CsvTracker('./expenses_december.csv')
-test_csv.read_csv()
-
-""" 
-print(test_csv.is_date('12/04/2024'))
-print(test_csv.is_number('test'))
-print(test_csv.is_string('200')) 
-"""
+#test_csv = CsvTracker('./expenses_december.csv')
+#test_csv.read_csv()

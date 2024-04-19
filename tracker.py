@@ -1,5 +1,5 @@
 from datetime import datetime
-import csv 
+from csvtracker import CsvTracker
 
 class BudgetTracker:
     def __init__(self, initial_balance):
@@ -37,6 +37,7 @@ class BudgetTracker:
 
     def get_expenses_month(self, month, year):
         total_by_month = 0
+        print(f"Expenses of {self._get_month(month)} {year}\n")
         for expense in self.expenses:
             date_string = expense[2]
             date_object = datetime.strptime(date_string, "%d/%m/%Y")
@@ -44,23 +45,20 @@ class BudgetTracker:
                 print(f"{expense[0]} --- $ {expense[1]} --- {expense[2]}")
                 total_by_month += expense[1]
             
-        print(f"Total by {self.get_month(month)} {year} --- ${total_by_month}")
+        print(f"\nTotal by {self._get_month(month)} {year} --- ${total_by_month}\n")
 
-    def get_month(self, month):
+    def _get_month(self, month):
         if month < 1 and month > 12:
             return None
         months = ['january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december']
         return  months[month-1].capitalize()
     
-    def read_csv(self, csv_file_path):
-        with open(csv_file_path, "r") as csv_file:
-            csv_reader = csv.reader(csv_file)
-            for row in csv_reader:
-                if row:
-                    #clean the row from csv file
-                    cleaned_row = [t.strip() for t in row] 
-                    print(cleaned_row)
-                    self.add_expense(cleaned_row[0], float(cleaned_row[1]), cleaned_row[2])
+    def load_csv(self, file_path):
+        #csvtracking = CsvTracker('./expenses_december.csv')
+        csvtracking = CsvTracker(file_path)
+        expenses = csvtracking.read_csv()
+        for expense in expenses:
+            self.add_expense(expense[0],expense[1],expense[2])
 
 rafa_tracking  = BudgetTracker(1000)
 rafa_tracking.add_income(100)
@@ -76,6 +74,12 @@ rafa_tracking.add_expense("Microsoft",10.99, "19/03/2024")
 
 #rafa_tracking.get_account_info()
 #rafa_tracking.get_expenses_month(3,2024)
-rafa_tracking.read_csv('./expenses_december.csv')
+#rafa_tracking.read_csv('./expenses_december.csv')
 #rafa_tracking.get_account_info()
-rafa_tracking.get_expenses_month(12,2024)
+#rafa_tracking.get_expenses_month(12,2024)
+rafa_tracking.load_csv('./expenses_december.csv')
+
+for month in range(1,13):
+    rafa_tracking.get_expenses_month(month,2024)
+#rafa_tracking.get_expenses_month(12,2024)
+
