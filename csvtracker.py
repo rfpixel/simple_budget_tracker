@@ -81,7 +81,7 @@ class CSVExpense(CSVStrategy):
                         e = self._create_expense(cleaned_row)
                         expenses.append(e)
                     else:
-                        print("invalid csv data. Check format: shop name,price,date")
+                        print("invalid csv data. Check format: shop name,price,date,type of payment")
                         print(f"Please check the following line: {cleaned_row}\n")
                     #self.add_expense(cleaned_row[0], float(cleaned_row[1]), cleaned_row[2])
         #print(expenses)

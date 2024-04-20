@@ -6,25 +6,29 @@ from csvtracker import CSVContext, CSVIncome, CSVExpense
 
 class BudgetTracker:
     def __init__(self, name):
-        self.expenses = []
-        self.incomes = []
-        self.name = name
+        self._expenses = []
+        self._incomes = []
+        self._name = name
     
-    def get_budget_name(self):
-        return self.name
+    @property
+    def name(self):
+        return self._name
+    @name.setter
+    def name(self, name):
+        self._name = name
     
     def add_income(self, income):
         if not isinstance(income, Income):
             print("Invalid income object")
             return
-        self.incomes.append(income)
+        self._incomes.append(income)
     
     def get_incomes(self):
-        return self.incomes
+        return self._incomes
     
     def calculate_income_by_month(self, month, year):
         total_by_month = 0
-        for income in self.incomes:
+        for income in self._incomes:
             date_string = income.get_date()
             date_object = datetime.strptime(date_string, "%d/%m/%Y")
             if date_object.month == month and date_object.year == year:
@@ -36,18 +40,18 @@ class BudgetTracker:
             print("Invalid expense object")
             return
 
-        self.expenses.append(expense)
+        self._expenses.append(expense)
 
     def get_expenses(self):
-        return self.expenses
+        return self._expenses
        
     def calculate_expenses_by_month(self, month, year):
         total_by_month = 0
-        for expense in self.expenses:
-            date_string = expense.get_date()
+        for expense in self._expenses:
+            date_string = expense.date
             date_object = datetime.strptime(date_string, "%d/%m/%Y")
             if date_object.month == month and date_object.year == year:
-                total_by_month += expense.get_amount()
+                total_by_month += expense.amount
         return total_by_month
     
     def _get_month(self, month):
@@ -65,7 +69,7 @@ class BudgetTracker:
         context = CSVContext(CSVIncome())
         context.read_csv(filepath)
     
-    def load_csv_expense(self, filepath):
+    def load_csv_expenses(self, filepath):
         context = CSVContext(CSVExpense())
         expenses = context.read_csv(filepath)
         for e in expenses:

@@ -3,19 +3,32 @@ from datetime import datetime
 #TODO: add validations like date, desc, amount
 class Transaction:
     def __init__(self, desc, amount, date):
-        self.description = desc
-        self.amount = amount
+        self._description = desc
+        self._amount = amount
         if self._is_date(date):
-            self.date = date
-        
-    def get_description(self):
-        return self.description
+            self._date = date
     
-    def get_amount(self):
-        return self.amount
+    @property
+    def description(self):
+        return self._description
+    @description.setter
+    def description(self, desc):
+        self._description = desc
     
-    def get_date(self):
-        return self.date
+    @property
+    def amount(self):
+        return self._amount
+    @amount.setter
+    def amount(self, amount):
+        self._amount = amount
+    
+    @property
+    def date(self):
+        return self._date
+    @date.setter
+    def date(self, date):
+        if self._is_date(date):
+            self._date = date
     
     def _is_date(self, testdata):
         date_format = "%d/%m/%Y"

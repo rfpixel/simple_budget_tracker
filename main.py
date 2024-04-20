@@ -2,7 +2,6 @@ from income import Income
 from expense import Expense
 from tracker import BudgetTracker
 
-
 tracking_rafael = BudgetTracker("Rafael")
 
 i = Income("salary",1000, "12/01/2024")
@@ -28,6 +27,6 @@ tracking_rafael.add_expense(e)
 # print(f"Balance: {balance}")
 
 #tracking_rafael.load_csv_income('./incomes_december.csv')
-tracking_rafael.load_csv_expense('./expenses_december.csv')
+tracking_rafael.load_csv_expenses('./expenses_december.csv')
 total_expense = tracking_rafael.calculate_expenses_by_month(12,2024)
 print(total_expense)
