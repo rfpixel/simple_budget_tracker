@@ -1,7 +1,8 @@
 from datetime import datetime
 from income import Income
 from expense import Expense
-from csvtracker import CsvTracker
+#from csvtracker import CsvTracker
+from csvtracker import CSVContext, CSVIncome, CSVExpense
 
 class BudgetTracker:
     def __init__(self, name):
@@ -55,14 +56,27 @@ class BudgetTracker:
         months = ['january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december']
         return  months[month-1].capitalize()
 
-    def load_csv_expenses(self, file_path):
+    def calculate_balance_month(self, month, year):
+        total_expense = self.calculate_expenses_by_month(month, year)
+        total_income = self.calculate_income_by_month(month,year)
+        return total_income - total_expense
+    
+    def load_csv_income(self, filepath):
+        context = CSVContext(CSVIncome())
+        context.read_csv(filepath)
+    
+    def load_csv_expense(self, filepath):
+        context = CSVContext(CSVExpense())
+        expenses = context.read_csv(filepath)
+        for e in expenses:
+            self.add_expense(e)
+
+"""     def load_csv_expenses(self, file_path):
         #csvtracking = CsvTracker('./expenses_december.csv')
         csvtracking = CsvTracker(file_path)
         expenses = csvtracking.read_csv_expenses()
         for e in expenses:
             self.add_expense(e)
+ """
 
-    def calculate_balance_month(self, month, year):
-        total_expense = self.calculate_expenses_by_month(month, year)
-        total_income = self.calculate_income_by_month(month,year)
-        return total_income - total_expense
+    

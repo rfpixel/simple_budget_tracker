@@ -24,5 +24,10 @@ tracking_rafael.add_expense(e)
 # total_income = tracking_rafael.calculate_income_by_month(1,2024)
 # print(f"Income: {total_income}")
 
-balance = tracking_rafael.calculate_balance_month(1,2024)
-print(f"Balance: {balance}")
+# balance = tracking_rafael.calculate_balance_month(1,2024)
+# print(f"Balance: {balance}")
+
+#tracking_rafael.load_csv_income('./incomes_december.csv')
+tracking_rafael.load_csv_expense('./expenses_december.csv')
+total_expense = tracking_rafael.calculate_expenses_by_month(12,2024)
+print(total_expense)
